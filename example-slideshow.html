@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="jquery.gallerie.js"></script>
+<link rel="stylesheet" type="text/css" href="gallerie.css"/>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var $gallery = $('#gallery'),
+		delay = 5000;
+		
+	function slideshow_next() {
+		// only continue with slideshow if gallerie is open
+		if ($gallery.gallerie('isOpen')) {
+			$gallery.gallerie('next');
+			setTimeout(slideshow_next, delay);
+		}
+	}
+
+	$.ajax('http://api.flickr.com/services/rest/',{
+		data: {
+			format: 'json',
+			method: 'flickr.interestingness.getList',
+			api_key: '270e736b0e42643aab5aab7819164d84'
+		},
+		dataType: 'jsonp',
+		jsonp: 'jsoncallback'
+	}).done(function(data){
+	
+		var $image,
+			$link,
+			base_url,
+			t_url,
+			i_url;
+		
+		$.each(data.photos.photo, function(index, photo){
+			base_url = 'http://farm' + photo.farm + '.static.flickr.com/' + photo.server + '/' + photo.id + '_' + photo.secret;
+			t_url = base_url + '_t.jpg';
+			i_url = base_url + '_b.jpg';  
+			
+			$image = $('<img/>').prop({
+				'src': t_url,
+				'title': photo.title
+			});
+			
+			$link = $('<a/>').prop('href', i_url).append($image);
+			$gallery.append($link);
+		});
+	
+		$gallery.gallerie().gallerie('open');
+		setTimeout(slideshow_next, delay);
+	});
+	
+});
+
+</script>
+
+<style>
+	body {
+		background-color: black;
+	}
+	
+	#gallery {
+		margin-left: auto;
+		margin-right: auto;
+	}
+</style>
+</head>
+
+<body>
+<div id="gallery"></div>
+</body>
+</html>
