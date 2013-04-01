@@ -10,8 +10,6 @@ Released under MIT LICENSE
 	
 	$.fn.gallerie = function (method) {
 		
-		var plugindata;
-		
 		function rebuildOverlay(target, imageLinks){
 			var $this = $(target),
 				options = $this.data('gallerie')['options'],
@@ -117,6 +115,29 @@ Released under MIT LICENSE
 			
 		}
 		
+		function displayLoadedImage(targets) {
+		
+			// unwrap if target is event
+			if (targets instanceof $.Event) {
+				targets = targets['data'];
+			}
+		
+			var preloadImage = targets['preloadImage'],
+				$image = targets['$image'],
+				$imageLoading = targets['$imageLoading'];
+		
+			if (preloadImage != $image.data('preloadImage'))
+				return;
+		
+			// load the target image
+			$image.prop({
+				src: preloadImage.src,
+				title: preloadImage.title
+			});
+	
+			$imageLoading.hide();
+		}
+		
 		// public methods
 		var methods = {
 				
@@ -134,8 +155,8 @@ Released under MIT LICENSE
 				
 				return this.each(function(){
 					
-					var $this = $(this);
-					plugindata = $this.data('gallerie');
+					var $this = $(this),
+						plugindata = $this.data('gallerie');
 					
 					// if plugin has not been initialized on element
 					if (!plugindata) {
@@ -169,6 +190,7 @@ Released under MIT LICENSE
 						linkType = $.type(imageLink),
 						$imageLink,
 						$image,
+						preloadImage,
 						$imageLoading;
 					
 					// if image is a number, we consider it the index of the target thumb
@@ -183,31 +205,31 @@ Released under MIT LICENSE
 					$image = $overlay.find('.gallerie-image');
 					$imageLoading = $overlay.find('.gallerie-loading');
 					
-					// load the target image
-					$image.prop({
-						src: $imageLink.prop('href'),
-						title: $imageLink.find('img').prop('title')
-					}).load(function(){
-						// hide image loading after we have loaded target
-						$imageLoading.hide();
-					});
+					// construct new image element to work-around onLoad issues with various browsers
+					preloadImage = new Image();
+					var targetData = {
+						'preloadImage': preloadImage,
+						'$image': $image,
+						'$imageLoading': $imageLoading
+					};
 					
-					// if image hasn't loaded (not from cache, begin imageLoading display process)
-					if (!$image.prop('complete')) {
+					// when image has loaded, call displayLoadedImage to update real image to preloadImage
+					$(preloadImage).on('load.gallerie', targetData, displayLoadedImage);
+					$image.data('preloadImage', preloadImage);
+					preloadImage.src = $imageLink.prop('href');
 					
-						// give loading image 250ms to load before showing imageLoading
-						setTimeout(function(){
-							// show image loading if image still not loaded
-							if (!$image.prop('complete')) {
-								$imageLoading.show();
-								
-								// hide image loading if target already loaded while showing imageLoading
-								if ($image.prop('complete')) {
-									$imageLoading.hide();
-								}
+					// give the image 250ms to load before showing imageLoading (lowers flicker chance of imageLoading)
+					setTimeout(function(){
+						// image still has not loaded, so we show imageLoading
+						if (!preloadImage.complete) {
+							$imageLoading.show();
+							
+							// hide image loading if target already loaded while showing imageLoading
+							if (preloadImage.complete) {
+								displayLoadedImage(targetData);
 							}
-						}, 250);
-					}
+						}
+					}, 250);
 					
 					// attempt to find link in thumbnails
 					var $thumbLink = $thumbBox.find(imageLink),
