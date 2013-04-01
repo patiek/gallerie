@@ -22,7 +22,7 @@ Where you have your thumbnail images linked to originals in HTML:
 	<a href="/images/cat.jpg"><img src="/images/cat.jpg"/></a>
 </div>
 ```
-You can see [example.html](https://github.com/patiek/gallerie/blog/example.html) for a basic example.
+You can see [example.html](https://github.com/patiek/gallerie/blob/master/example.html) for a basic example.
 
 Gallerie supports jQuery-style chaining.
 
