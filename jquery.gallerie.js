@@ -6,7 +6,7 @@ web: http://browniethoughts.com/
 Released under MIT LICENSE 
 */
 
-(function($) {
+;(function($) {
 	
 	$.fn.gallerie = function (method) {
 		
@@ -52,20 +52,23 @@ Released under MIT LICENSE
 				$this.gallerie('close');
 			});
 		
+		
 			var scrollHover = 0;
+			
 			$thumbBox.mousemove(function(event){
 			
 				var triggerWidth = options['thumbboxTriggerWidth'],
-					thumbboxWidth = $thumbList.outerWidth();
+					thumbboxWidth = $thumbList.outerWidth(),
+					windowWidth = $(window).width();
 			
 				// adjust triggerWidth to pixels if it is a percentage
 				if (triggerWidth < 1)
-						triggerWidth = $(window).width() * triggerWidth;
+						triggerWidth = windowWidth * triggerWidth;
 			
 				var oldHover = scrollHover;
 				if (event.pageX < triggerWidth) {
 					scrollHover = 0;
-				} else if ($(window).width() - event.pageX < triggerWidth) {
+				} else if (windowWidth - event.pageX < triggerWidth) {
 					scrollHover = 1;
 				} else {
 					scrollHover = -1;
@@ -78,7 +81,7 @@ Released under MIT LICENSE
 						return;
 					
 					var oldLeft = parseInt($thumbList.css('left'),10);
-					var newLeft = -(scrollHover * thumbboxWidth) + ($(window).width() * scrollHover);
+					var newLeft = -(scrollHover * thumbboxWidth) + (windowWidth * scrollHover);
 					var travelAmount = Math.abs(newLeft - oldLeft);
 					
 					$thumbList.animate({
