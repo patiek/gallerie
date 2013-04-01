@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="jquery.gallerie.js"></script>
 <link rel="stylesheet" type="text/css" href="gallerie.css"/>
 
@@ -19,7 +19,7 @@ $(document).ready(function(){
 		}
 	}
 
-	$.ajax('http://api.flickr.com/services/rest/',{
+	$.ajax('https://secure.flickr.com/services/rest/',{
 		data: {
 			format: 'json',
 			method: 'flickr.interestingness.getList',
