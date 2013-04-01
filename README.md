@@ -1,7 +1,7 @@
 Gallerie - A JQuery Gallery Plugin
 ===========
 
-Gallerie is a simple JQuery plugin that offers a basic lightbox-like gallery viewer of a collection of images. It features a simple overlay with a scrollable thumbnail list, image loading hint, as well as an image caption and index. The thumbnails automatically scroll with as with the user's mouse and can be activate by click or custom event. Several methods exist to allow for extending the function with richer functionality through javascript.
+Gallerie is a plugin that offers a basic lightbox-like gallery viewer of a collection of images. It features a simple overlay with a scrollable thumbnail list, image loading hint, as well as an image caption and index. The overlay thumbnails automatically scroll with the user's mouse and can be activated by click or custom event. Several methods exist to allow for extending the plugin with richer functionality through javascript.
 
 Usage
 ===========
