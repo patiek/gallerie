@@ -6,14 +6,20 @@ Gallerie is a plugin that offers a basic lightbox-like gallery viewer of a colle
 Usage
 ===========
 You can use gallerie by simply calling it on your existing collection of 
-thumbnail links.
-```javascript
+thumbnail links. For example, you could place the folling inside of `<head>` tags:
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="jquery.gallerie.js"></script>
+<link rel="stylesheet" type="text/css" href="gallerie.css"/>
+
+<script type="text/javascript">
 $(document).ready(function(){
 	$('#gallery').gallerie();
 });
+</script>
 ```
 
-Where you have your thumbnail images linked to originals in HTML:
+Where you have your thumbnail images linked to originals in your `<body>`:
 ```html
 <div id="gallery">
 	<a href="/images/myimage.png"><img src="/thumbs/myimage-thumb.png"/></a>
@@ -24,8 +30,21 @@ Where you have your thumbnail images linked to originals in HTML:
 ```
 You can see [example.html](https://github.com/patiek/gallerie/blob/master/example.html) for a basic example.
 
+### CSS3 Support
+Gallerie supports CSS3 use of translate for scrolling if you load the [jquery.transform.js](https://github.com/louisremi/jquery.transform.js) plugin:
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="jquery.gallerie.js"></script>
+<script src="jquery.transform2d.js"></script>
+```
+
+Including the jquery.transform.js plugin will improve scrolling performance in some browsers including firefox.
+
 Gallerie supports jQuery-style chaining.
 
+
+## Demo
+You can find a demo of these [on my website](http://www.browniethoughts.com/2013/03/gallerie-gallery-image-viewer-jquery-plugin.html).
 
 ## Options
 Gallerie features several options that can be set at initialization or using the `.gallerie('option')` method.
@@ -271,3 +290,6 @@ var $gallery = $('#gallery');
 $gallery.gallerie('setImage', 4);
 ```
 
+License
+===========
+Gallerie is open sourced Copyright (c) 2013 Patrick Brown under the [MIT License](https://github.com/patiek/gallerie/blob/master/MIT-LICENSE.txt).

@@ -43,6 +43,8 @@ Released under MIT LICENSE
 				$thumbList.append($thumbItem);
 			});
 			
+			$thumbList.data('transX', 0);
+			
 			$overlay.append($imageBox.append($image).append($imageLoading))
 					.append($captionBox)
 					.append($thumbBox.append($thumbList));
@@ -79,14 +81,27 @@ Released under MIT LICENSE
 				
 					if (scrollHover < 0)
 						return;
+						
+					var oldLeft=0,
+						newLeft,
+						travelAmount;
+						
+					if ($.fx.step.transform) {
+						var matrix = $thumbList.css('transform'),
+							marray = matrix.split(',');
+						if (marray.length > 4) {
+							oldLeft=parseInt(marray[4]);
+						}
+						console.log($thumbList.css('transform'));
+						console.log(oldLeft);
+					} else {
+						oldLeft = parseInt($thumbList.css('left'),10);
+					}
 					
-					var oldLeft = parseInt($thumbList.css('left'),10);
-					var newLeft = -(scrollHover * thumbboxWidth) + (windowWidth * scrollHover);
-					var travelAmount = Math.abs(newLeft - oldLeft);
+					newLeft = -(scrollHover * thumbboxWidth) + (windowWidth * scrollHover);
+					travelAmount = Math.abs(newLeft - oldLeft);
 					
-					$thumbList.animate({
-						left: newLeft
-					},{
+					scrollAnimate($thumbList, newLeft, {
 						duration: travelAmount * 1/options['thumbboxSpeed'],
 						easing: 'linear'
 					});
@@ -116,6 +131,20 @@ Released under MIT LICENSE
 			
 			return $overlay;
 			
+		}
+		
+		function scrollAnimate($element, leftPos, options) {
+			// if jquery.transform.js is present, use it to translate
+			if ($.fx.step.transform) {
+				$element.animate({
+					transform: 'translate('+leftPos+'px)'
+				}, options);
+			} else {
+				// default to using left property
+				$element.animate({
+					left: leftPos,
+				}, options);	
+			}
 		}
 		
 		function displayLoadedImage(targets) {
@@ -281,9 +310,7 @@ Released under MIT LICENSE
 						$thumbList.clearQueue();
 						
 						// animate scroll to the position
-						$thumbList.animate({
-							left: -newLeft
-						}, 1000);
+						scrollAnimate($thumbList, -newLeft, {'duration': 1000});
 					}
 					
 					
