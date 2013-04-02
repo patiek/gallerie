@@ -43,8 +43,6 @@ Released under MIT LICENSE
 				$thumbList.append($thumbItem);
 			});
 			
-			$thumbList.data('transX', 0);
-			
 			$overlay.append($imageBox.append($image).append($imageLoading))
 					.append($captionBox)
 					.append($thumbBox.append($thumbList));
@@ -92,8 +90,6 @@ Released under MIT LICENSE
 						if (marray.length > 4) {
 							oldLeft=parseInt(marray[4]);
 						}
-						console.log($thumbList.css('transform'));
-						console.log(oldLeft);
 					} else {
 						oldLeft = parseInt($thumbList.css('left'),10);
 					}

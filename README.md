@@ -38,7 +38,7 @@ Gallerie supports CSS3 use of translate for scrolling if you load the [jquery.tr
 <script src="jquery.transform2d.js"></script>
 ```
 
-Including the jquery.transform.js plugin will improve scrolling performance in some browsers including firefox.
+Including the [jquery.transform.js](https://github.com/louisremi/jquery.transform.js) plugin will improve scrolling performance in some browsers including firefox.
 
 Gallerie supports jQuery-style chaining.
 
