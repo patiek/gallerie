@@ -170,46 +170,51 @@ Released under MIT LICENSE
 		}
 		
 		function scrollStop($element) {
-			if (_transform !== undefined && _transition !== undefined) {
-				// get current transform
-				var matrix = $element.css(_transform),
-					marray = matrixToArray(matrix);
-
+			// transition support
+			if (_transition !== undefined) {
 				var css = {};
-				css[_transform] = 'translate('+marray[4]+'px)';
-				css[_transition] = _transform +' 0s linear';
+				
+				// transform support
+				if (_transform !== undefined) {
+					// get current transform
+					var matrix = $element.css(_transform),
+						marray = matrixToArray(matrix);
+					css[_transform] = 'translate('+marray[4]+'px)';
+					css[_transition] = _transform +' 0ms';
+				} else {
+					css['left'] = $element.css('left');
+					css[_transition] = 'left 0ms';
+				}
+				
 				$element.css(css);
 				
-			} else if (_transition !== undefined) {
-				var css = {
-					left: $element.css('left'),
-				};
-				css[_transition] = 'left 0s linear';
-				$element.css(css);
-				
-			} else {
+			}else { // jquery animations
 				$element.clearQueue().stop();
 			}
 		}
 		
 		function scrollAnimate($element, leftPos, options) {
 		
-			// transform + transition support
-			if (_transform !== undefined && _transition !== undefined) {
+			// transition support
+			if (_transition !== undefined) {
 			
 				if (options['easing'] == undefined) {
 					options['easing'] = 'ease';
 				}
 				
-				var css  = {}
-				css[_transform] = 'translate('+leftPos+'px)';
-				css[_transition] = _transform +' '+ options.duration + 'ms ' + options['easing'];
+				var css  = {};
+				
+				// transform support
+				if (_transform !== undefined) {
+					css[_transform] = 'translate('+leftPos+'px)';
+					css[_transition] = _transform +' '+ options.duration + 'ms ' + options['easing'];
+				} else {
+					css['left'] = leftPos;
+					css[_transition] = 'left '+ options.duration + 'ms ' + options['easing'];
+				}
+				
 				$element.css(css);
 				
-			} else if (_transform !== undefined) { // transition support
-				css = { left: leftPos };
-				css[_transition] = 'left ' + options.duration + 'ms linear';
-				$element.css(css);
 			} else { // default to using jQuery's animate
 				$element.animate({
 					left: leftPos,
