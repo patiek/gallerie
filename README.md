@@ -30,16 +30,8 @@ Where you have your thumbnail images linked to originals in your `<body>`:
 ```
 You can see [example.html](https://github.com/patiek/gallerie/blob/master/example.html) for a basic example.
 
-### CSS3 Support
-Gallerie supports CSS3 use of translate for scrolling if you load the [jquery.transform.js](https://github.com/louisremi/jquery.transform.js) plugin:
-```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="jquery.gallerie.js"></script>
-<script src="jquery.transform2d.js"></script>
-```
-
-Including the [jquery.transform.js](https://github.com/louisremi/jquery.transform.js) plugin will improve scrolling performance in some browsers including firefox.
-
+### CSS3 and chaining Support
+Gallerie supports CSS3 use of translate and transition for scrolling if is supported by the browser.
 Gallerie supports jQuery-style chaining.
 
 

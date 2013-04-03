@@ -7,6 +7,37 @@ Released under MIT LICENSE
 */
 
 ;(function($) {
+
+	var _body = document.body || document.documentElement,
+		_style = _body.style,
+		_transition,
+		_transform;
+		
+	// detect support for transition		
+	if (_style.transition !== undefined) {
+		_transition = 'transition';
+	} else if (_style.WebkitTransition !== undefined) {
+		_transition = '-webkit-transition';
+	} else if (_style.MozTransition !== undefined) {
+		_transition = '-moz-transition';
+	} else if (_style.MsTransition !== undefined) {
+		_transition = '-ms-transition';
+	} else if (_style.OTransition !== undefined) {
+		_transition = '-o-transition';
+	}
+	
+	// detect support for transform
+	if (_style.transform !== undefined) {
+		_transform = 'transform';
+	} else if (_style.WebkitTransform !== undefined) {
+		_transform = '-webkit-transform';
+	} else if (_style.MozTransform !== undefined) {
+		_transform = '-moz-transform';
+	} else if (_style.MsTransform !== undefined) {
+		_transform = '-ms-transform';
+	} else if (_style.OTransform !== undefined) {
+		_transform = '-o-transform';
+	}
 	
 	$.fn.gallerie = function (method) {
 		
@@ -75,7 +106,8 @@ Released under MIT LICENSE
 				}
 			
 				if (oldHover != scrollHover) {
-					$thumbList.clearQueue().stop();
+				
+					scrollStop($thumbList);
 				
 					if (scrollHover < 0)
 						return;
@@ -83,13 +115,16 @@ Released under MIT LICENSE
 					var oldLeft=0,
 						newLeft,
 						travelAmount;
-						
-					if ($.fx.step.transform) {
-						var matrix = $thumbList.css('transform'),
-							marray = matrix.split(',');
+					
+					
+					if (_transform !== undefined && _transition !== undefined) {
+						// get current transform
+						var matrix = $thumbList.css(_transform),
+						marray = matrixToArray(matrix);
 						if (marray.length > 4) {
-							oldLeft=parseInt(marray[4]);
+							oldLeft = parseInt(marray[4]);
 						}
+						
 					} else {
 						oldLeft = parseInt($thumbList.css('left'),10);
 					}
@@ -104,7 +139,7 @@ Released under MIT LICENSE
 				}
 
 			}).mouseleave(function(event){
-				$thumbList.clearQueue().stop();
+				scrollStop($thumbList);
 				scrollHover = -1;
 			});
 						
@@ -129,17 +164,56 @@ Released under MIT LICENSE
 			
 		}
 		
-		function scrollAnimate($element, leftPos, options) {
-			// if jquery.transform.js is present, use it to translate
-			if ($.fx.step.transform) {
-				$element.animate({
-					transform: 'translate('+leftPos+'px)'
-				}, options);
+		function matrixToArray(matrix) {
+			var marray = matrix.substr(7, matrix.length - 8).split(',');
+			return marray;
+		}
+		
+		function scrollStop($element) {
+			if (_transform !== undefined && _transition !== undefined) {
+				// get current transform
+				var matrix = $element.css(_transform),
+					marray = matrixToArray(matrix);
+
+				var css = {};
+				css[_transform] = 'translate('+marray[4]+'px)';
+				css[_transition] = _transform +' 0s linear';
+				$element.css(css);
+				
+			} else if (_transition !== undefined) {
+				var css = {
+					left: $element.css('left'),
+				};
+				css[_transition] = 'left 0s linear';
+				$element.css(css);
+				
 			} else {
-				// default to using left property
+				$element.clearQueue().stop();
+			}
+		}
+		
+		function scrollAnimate($element, leftPos, options) {
+		
+			// transform + transition support
+			if (_transform !== undefined && _transition !== undefined) {
+			
+				if (options['easing'] == undefined) {
+					options['easing'] = 'ease';
+				}
+				
+				var css  = {}
+				css[_transform] = 'translate('+leftPos+'px)';
+				css[_transition] = _transform +' '+ options.duration + 'ms ' + options['easing'];
+				$element.css(css);
+				
+			} else if (_transform !== undefined) { // transition support
+				css = { left: leftPos };
+				css[_transition] = 'left ' + options.duration + 'ms linear';
+				$element.css(css);
+			} else { // default to using jQuery's animate
 				$element.animate({
 					left: leftPos,
-				}, options);	
+				}, options);
 			}
 		}
 		
