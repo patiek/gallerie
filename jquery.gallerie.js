@@ -231,16 +231,34 @@ Released under MIT LICENSE
 		
 			var preloadImage = targets['preloadImage'],
 				$image = targets['$image'],
-				$imageLoading = targets['$imageLoading'];
+				$imageBox = $image.closest('.gallerie-imagebox');
+				$imageLoading = targets['$imageLoading'],
+				maxWidth = $imageBox.width(),
+				maxHeight = $imageBox.height(),
+				height=0,
+				width=0;
 		
 			if (preloadImage != $image.data('preloadImage'))
 				return;
+			
+			// adjust width and height according to determined maxWidth
+			width = preloadImage.width > maxWidth ? maxWidth : preloadImage.width;
+			height = preloadImage.height * width / preloadImage.width; 
+			
+			// if height still too big, use maxHeight scale width & height
+			if (height > maxHeight) {
+				height = maxHeight;
+				width = preloadImage.width * height / preloadImage.height;
+			}
 		
 			// load the target image
 			$image.prop({
 				src: preloadImage.src,
 				title: preloadImage.title
-			});
+			}).css({
+				width: width,
+				height: height
+			}).removeClass('loading');
 	
 			$imageLoading.hide();
 		}
@@ -311,6 +329,8 @@ Released under MIT LICENSE
 					$imageLink = $(imageLink);
 					$image = $overlay.find('.gallerie-image');
 					$imageLoading = $overlay.find('.gallerie-loading');
+					
+					$image.addClass('loading');
 					
 					// construct new image element to work-around onLoad issues with various browsers
 					preloadImage = new Image();

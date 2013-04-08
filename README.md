@@ -3,6 +3,7 @@ Gallerie - A JQuery Gallery Plugin
 
 Gallerie is a plugin that offers a basic lightbox-like gallery viewer of a collection of images. It features a simple overlay with a scrollable thumbnail list, image loading hint, as well as an image caption and index. The overlay thumbnails automatically scroll with the user's mouse and can be activated by click or custom event. Several methods exist to allow for extending the plugin with richer functionality through javascript.
 
+
 Usage
 ===========
 You can use gallerie by simply calling it on your existing collection of 
@@ -11,6 +12,7 @@ thumbnail links. For example, you could place the folling inside of `<head>` tag
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="jquery.gallerie.js"></script>
 <link rel="stylesheet" type="text/css" href="gallerie.css"/>
+<link rel="stylesheet" type="text/css" href="gallerie-effects.css"/>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -30,8 +32,12 @@ Where you have your thumbnail images linked to originals in your `<body>`:
 ```
 You can see [example.html](https://github.com/patiek/gallerie/blob/master/example.html) for a basic example.
 
-### CSS3 and chaining Support
+### CSS3
 Gallerie supports CSS3 use of translate and transition for scrolling if is supported by the browser.
+
+There is also a separate [gallerie-effects.css](https://github.com/patiek/gallerie/blob/master/gallerie-effects.css) stylesheet that can be included in addition to the standard stylesheet that will use some nice transition and opacity effects when changing images in the gallerie overlay. You can customize these further for greater effect.
+
+### Chaining support
 Gallerie supports jQuery-style chaining.
 
 

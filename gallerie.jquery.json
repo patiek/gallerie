@@ -1,7 +1,7 @@
 {
   "name": "gallerie",
   "title": "Gallerie - Gallery Image Viewer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Gallerie is a plugin that offers a lightbox-like gallery viewer of a collection of images. It features a simple overlay with a scrollable thumbnail list, image loading hint, as well as an image caption and index. The overlay thumbnails automatically scroll with the user's mouse and can be activated by click or custom event. Several methods exist to allow for extending the plugin with richer functionality through javascript.",
   "keywords": [ "gallery", "slideshow", "image", "picture", "viewer", "lightbox", "overlay", "scroll" ],
   "author": {
