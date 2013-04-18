@@ -48,7 +48,7 @@ Released under MIT LICENSE
 				$imageBox = $('<div class="gallerie-imagebox"/>'),
 				$image = $('<img class="gallerie-image"/>'),
 				$imageLoading = $('<div class="gallerie-loading"/>'),
-				$captionBox = $('<div class="gallerie-captionbox"><div class="gallerie-title"/><div class="gallerie-index"/></div>'),
+				$captionBox = $('<div class="gallerie-captionbox"><div class="gallerie-control gallerie-control-previous">&laquo;</div><div class="gallerie-text"><div class="gallerie-title"/><div class="gallerie-index"/></div><div class="gallerie-control gallerie-control-next">&raquo;</div></div>'),
 				$thumbList = $('<ul></ul>'),
 				$thumbBox = $('<div class="gallerie-thumbbox"/>'),
 				$thumbItem,
@@ -81,6 +81,16 @@ Released under MIT LICENSE
 					
 			$overlay.on('click.gallerie', function(event){
 				$this.gallerie('close');
+			});
+			
+			$overlay.on('click.gallerie', '.gallerie-control-previous', function(event){
+				$this.gallerie('previous');
+				return false;
+			});
+			
+			$overlay.on('click.gallerie', '.gallerie-control-next', function(event){
+				$this.gallerie('next');
+				return false;
 			});
 		
 		
@@ -233,8 +243,8 @@ Released under MIT LICENSE
 				$image = targets['$image'],
 				$imageBox = $image.closest('.gallerie-imagebox');
 				$imageLoading = targets['$imageLoading'],
-				maxWidth = $imageBox.width(),
-				maxHeight = $imageBox.height(),
+				maxWidth = $imageBox.width() - $image.outerWidth() + $image.width(),
+				maxHeight = $imageBox.height() - $image.outerHeight() + $image.height(),
 				height=0,
 				width=0;
 		
@@ -390,12 +400,12 @@ Released under MIT LICENSE
 					$captionBox.find(".gallerie-title").text($targetThumb.find('img').prop('title'));
 					$captionBox.find(".gallerie-index").text(thumbPosition + ' of ' + thumbTotal);
 					
-					var thumbpos = $targetThumb.offset().left - $targetThumb.outerWidth()/2,
+					var thumbpos = $targetThumb.position().left + $targetThumb.outerWidth(true)/2,
 						winwidth = $(window).width();
 					
-					if ($targetThumb.offset().left < 0 || $targetThumb.offset().left > winwidth - $targetThumb.outerWidth()) {
+					if ($targetThumb.offset().left < 0 || thumbpos > winwidth) {
 						// calculate new left edge of thumblist
-						var newLeft = -(winwidth/2 - $targetThumb.outerWidth()/2 - $targetThumb.position().left);
+						var newLeft = -(winwidth/2 - thumbpos);
 						
 						// if edge is beyond normal scrolling bounds, bring it to within bounds
 						newLeft = Math.max(0, newLeft);
@@ -423,7 +433,10 @@ Released under MIT LICENSE
 				return this.each(function(){
 					var $this = $(this),
 						options = $this.data('gallerie')['options'],
-						$overlay = $this.find('.gallerie-overlay');
+						$overlay = $this.find('.gallerie-overlay'),
+						$imageBox = $this.find('.gallerie-imagebox'),
+						$captionBox = $this.find('.gallerie-captionbox'),
+						$thumbBox = $this.find('.gallerie-thumbbox');
 					
 					if ($overlay.is(':hidden')) {
 						$(document).on('keyup.gallerie', function(e) {
@@ -435,6 +448,13 @@ Released under MIT LICENSE
 								$this.gallerie('next');
 							}
 						});
+						
+						// remove scrollbar from window
+						$('body').css({ overflow: 'hidden' });
+						
+						// resize imagebox to fill void not filled by captionBox and thumbBox
+						$imageBox.css({height: $overlay.height() - $captionBox.outerHeight() - $thumbBox.outerHeight() - parseInt($imageBox.css('margin-bottom'), 10) - parseInt($imageBox.css('margin-top'), 10)});
+						
 					}
 				
 					$overlay.fadeIn(500, function(){
@@ -449,6 +469,9 @@ Released under MIT LICENSE
 				return this.each(function(){
 					$(this).find('.gallerie-overlay').hide();
 					$(document).off('keyup.gallerie');
+					
+					// restore window scrollbar, etc
+					$("body").css({ overflow: 'inherit' });
 				});
 			},
 			
